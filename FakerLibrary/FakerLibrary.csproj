@@ -55,6 +55,7 @@
     <Compile Include="IntegratedGenerators\LongGenerator.cs" />
     <Compile Include="IntegratedGenerators\ObjectGenerator.cs" />
     <Compile Include="IntegratedGenerators\StringGenerator.cs" />
+    <Compile Include="Plugins.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

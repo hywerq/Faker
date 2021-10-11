@@ -6,7 +6,6 @@ namespace FakerLibrary.IntegratedGenerators
     public class ArrayGenerator
     {
         private Random _random;
-
         private Dictionary<Type, IIntegratedTypesGenerator> _integratedTypesGenerators;
 
         public ArrayGenerator(Dictionary<Type, IIntegratedTypesGenerator> generators)

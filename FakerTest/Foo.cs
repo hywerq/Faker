@@ -3,11 +3,11 @@
 namespace FakerTest
 {
     public class Foo
-    {        
-        public List<long> longList;
+    {
         public Bar bar;
+        public List<Bar> barList;
         private int _intValue;
-        private byte _byteValue;        
+        private byte _byteValue;
 
         public string stringValue
         {
@@ -29,14 +29,9 @@ namespace FakerTest
 
         public override string ToString()
         {
-            string list = "";
-            foreach (long item in longList)
-            {
-                list += item.ToString() + " ";
-            }
 
-            return ("\n\nDouble Bar: " + bar.barbariki + ", int: " + _intValue + ", byte:" + _byteValue + 
-                ", \nstring: " + stringValue + ",\nlist: " + list);
+            return ("\n\nDouble Bar: " + bar.barbariki + ", int: " + _intValue + ", byte:" + _byteValue +
+                ", \nstring: " + stringValue);
         }
     }
 }

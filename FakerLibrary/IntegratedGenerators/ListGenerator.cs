@@ -7,27 +7,26 @@ namespace FakerLibrary.IntegratedGenerators
     public class ListGenerator 
     {
         private Random _random;
-        private Dictionary<Type, IIntegratedTypesGenerator> _integratedTypesGenerators;
+        private Faker _faker;
 
-        public ListGenerator(Dictionary<Type, IIntegratedTypesGenerator> generators)
+        public ListGenerator(Faker faker)
         {
             _random = new Random();
-            _integratedTypesGenerators = generators;
+            _faker = faker;
         }
 
         public object Generate(Type type)
         {
             IList list = (IList)Activator.CreateInstance(typeof(List<>).MakeGenericType(type));
 
-            if (_integratedTypesGenerators.TryGetValue(type, out IIntegratedTypesGenerator generator))
-            {
-                int size = _random.Next(5, 15);
+            int size = _random.Next(1, 10);
 
-                for (int i = 0; i < size; i++)
-                {
-                    list.Add(generator.Generate());
-                }
+            for (int i = 0; i < size; i++)
+            {
+                var obj = _faker.CreateDTO(type);
+                list.Add(obj);
             }
+            
             return list;
         }
     }

@@ -1,8 +1,6 @@
 ﻿using FakerLibrary.IntegratedGenerators;
 using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Reflection;
 
 namespace FakerLibrary
 {
@@ -14,15 +12,17 @@ namespace FakerLibrary
         private ObjectGenerator _objectGenerator;
 
         private List<Type> _usedTypes = new List<Type>();
+        private Plugins plugins;
 
         public Faker()
         {            
             _integratedTypesGenerators = IntegratedTypesDictionary.FillDictionary();
             _arrayGenerator = new ArrayGenerator(_integratedTypesGenerators);
-            _listGenerator = new ListGenerator(_integratedTypesGenerators);
+            _listGenerator = new ListGenerator(this);
             _objectGenerator = new ObjectGenerator(this);
-            
-            PlugPlugins();
+
+            plugins = new Plugins(_integratedTypesGenerators);
+            plugins.Plug();
         }
 
         public T Create<T>()
@@ -31,69 +31,47 @@ namespace FakerLibrary
         }
 
         internal object CreateDTO(Type type)
-        {
-            if (_usedTypes.Contains(type))
+        {       
+            object obj = null;
+            if (_integratedTypesGenerators.TryGetValue(type, out IIntegratedTypesGenerator generator))
             {
-                return null;
+                obj = generator.Generate();
             }
-            else
-            {            
-                object obj = null;
-                if (_integratedTypesGenerators.TryGetValue(type, out IIntegratedTypesGenerator generator))
-                {
-                    obj = generator.Generate();
-                }
-                else if (type.IsArray)
-                {
-                    obj = _arrayGenerator.Generate(type.GetElementType());
-                }
-                else if (type.IsClass && !type.IsGenericType)
-                {
-                    _usedTypes.Add(type);
+            else if (type.IsArray)
+            {
+                obj = _arrayGenerator.Generate(type.GetElementType());
+            }
+            else if (type.IsClass && !type.IsGenericType)
+            {
+                _usedTypes.Add(type);
 
+                if (CountTypeEntriesInList(type) <= 3)
+                {
                     obj = _objectGenerator.CreateObject(type);
-
-                    _usedTypes.Remove(type);
-                }
-                else if (type.IsGenericType)
-                {
-                    obj = _listGenerator.Generate(type.GenericTypeArguments[0]);
                 }
 
-                return obj;
+                _usedTypes.Remove(type);
             }
+            else if (type.IsGenericType)
+            {
+                obj = _listGenerator.Generate(type.GenericTypeArguments[0]);
+            }
+
+            return obj;            
         }
 
-        private void PlugPlugins()
+        private int CountTypeEntriesInList(Type type)
         {
-            List<Assembly> assemblies = new List<Assembly>();
-
-            try
+            int count = 0;
+            foreach (Type item in _usedTypes)
             {
-                foreach (string file in Directory.GetFiles(Directory.GetCurrentDirectory() + "\\Plugins", "*.dll"))
+                if (item == type)
                 {
-                    try
-                    {                       
-                        assemblies.Add(Assembly.LoadFile(new FileInfo(file).FullName));
-                    }
-                    catch (FileLoadException) { }
-                }
-            }
-            catch (DirectoryNotFoundException)
-            { }
-
-            foreach (Assembly assembly in assemblies)
-            {
-                foreach (Type type in assembly.GetTypes())
-                {
-                    if (typeof(IExternalTypesGenerator).IsAssignableFrom(type) && type.IsClass)
-                    {
-                        IExternalTypesGenerator generator = (IExternalTypesGenerator)Activator.CreateInstance(type);
-                        _integratedTypesGenerators.Add(generator.GetCurrentType(), generator);
-                    }
+                    count++;
                 }
             }
 
+            return count;
         }
     }
 }

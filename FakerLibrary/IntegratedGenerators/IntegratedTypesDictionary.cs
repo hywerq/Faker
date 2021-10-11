@@ -13,7 +13,7 @@ namespace FakerLibrary.IntegratedGenerators
                 { typeof(int), new IntGenerator() },
                 { typeof(long), new LongGenerator() },
                 { typeof(string), new StringGenerator() },
-                { typeof(DateTime), new DateTimeGenerator() },
+                { typeof(DateTime), new DateTimeGenerator() }
             };
 
             return dictionary;

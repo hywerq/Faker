@@ -9,17 +9,17 @@ namespace FakerTest
         {
             Faker faker = new Faker();
 
-            int number = faker.Create<int>();
-            string line = faker.Create<string>();
-            DateTime dateTime = faker.Create<DateTime>();
+            //int number = faker.Create<int>();
+            //string line = faker.Create<string>();
+            //DateTime dateTime = faker.Create<DateTime>();
 
-            Console.WriteLine(number + "\n\n" + line + "\n\n" + dateTime + "\n");
+            //Console.WriteLine(number + "\n\n" + line + "\n\n" + dateTime + "\n");
 
-            byte[] array = faker.Create<byte[]>();
-            for (int i = 0; i < array.Length; i++)
-            {
-                Console.Write(array[i] + " ");
-            }
+            //byte[] array = faker.Create<byte[]>();
+            //for (int i = 0; i < array.Length; i++)
+            //{
+            //    Console.Write(array[i] + " ");
+            //}
 
             Foo foo = faker.Create<Foo>();
 
